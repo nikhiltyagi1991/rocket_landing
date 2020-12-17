@@ -8,6 +8,7 @@ public class RocketController : MonoBehaviour
 {
     [SerializeField] float thrustForce = 2.0f;
     [SerializeField] float rotationStrength = 30f;
+    [SerializeField] float levelLoadDelay = 2f;
 
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip finishClip;
@@ -20,6 +21,7 @@ public class RocketController : MonoBehaviour
 
     Rigidbody rigidBody;
     AudioSource audioSource;
+    bool collisionsDisabled = false;
 
     enum State { Alive, Dying, Trancending }
     State state = State.Alive;
@@ -32,16 +34,35 @@ public class RocketController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(state == State.Alive)
+        if (state == State.Alive)
         {
             RespondToThrustInput();
             RespondToRotateInput();
+        }
+
+        if (Debug.isDebugBuild)
+        {
+            RespondToDebugKeys();
+        }
+        
+    }
+
+    private void RespondToDebugKeys()
+    {
+        if (Input.GetKeyUp(KeyCode.L))
+        {
+            LoadNextScene();
+        }
+
+        if (Input.GetKeyUp(KeyCode.C))
+        {
+            collisionsDisabled = !collisionsDisabled;
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive) { return; }
+        if (state != State.Alive || collisionsDisabled) { return; }
         switch(collision.gameObject.tag)
         {
             case "Friendly":
@@ -64,7 +85,7 @@ public class RocketController : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(finishClip);
         finish.Play();
-        Invoke("LoadNextScene", 1f);
+        Invoke("LoadNextScene", levelLoadDelay);
     }
 
     private void DeathSequence()
@@ -73,17 +94,20 @@ public class RocketController : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(deathClip);
         death.Play();
-        Invoke("LoadPrevScene", 1f);
+        Invoke("ReloadCurrentScene", levelLoadDelay);
     }
 
-    private void LoadPrevScene()
+    private void ReloadCurrentScene()
     {
-        SceneManager.LoadScene(0);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
     }
 
     private void LoadNextScene()
     {
-        SceneManager.LoadScene(1);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = (currentSceneIndex + 1)% SceneManager.sceneCountInBuildSettings;
+        SceneManager.LoadScene(nextSceneIndex);
     }
 
     private void RespondToRotateInput()
@@ -100,7 +124,7 @@ public class RocketController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            rigidBody.AddRelativeForce(Vector3.up * thrustForce);
+            rigidBody.AddRelativeForce(Vector3.up * thrustForce * Time.deltaTime);
             if (!audioSource.isPlaying)
             {
                 audioSource.PlayOneShot(mainEngine);

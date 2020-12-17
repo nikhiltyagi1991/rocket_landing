@@ -6,9 +6,27 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Level1.unity
+    path: Assets/Scenes/easy_moving_bar.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/Level2.unity
+    path: Assets/Scenes/block_hut_design.unity
     guid: f49d060d72b7e9442a5a0393420dfa6a
+  - enabled: 1
+    path: Assets/Scenes/three_pass_design.unity
+    guid: 32f081221293e844a9ad09825a8577c8
+  - enabled: 1
+    path: Assets/Scenes/four_vertical_pass.unity
+    guid: 611618237048d96458a57454f497c84b
+  - enabled: 1
+    path: Assets/Scenes/horizontal_moving_obstacles.unity
+    guid: 8473bbd36cc8d2b4799176c4d5d15d83
+  - enabled: 1
+    path: Assets/Scenes/moving_pillars.unity
+    guid: 7b21b452effcc2d4cb0e8ad58798c4d8
+  - enabled: 1
+    path: Assets/Scenes/single_narrow_pass.unity
+    guid: 9b46f3a04333a6a4ea0f2987c112e5fc
+  - enabled: 1
+    path: Assets/Scenes/slanted_moving.unity
+    guid: 3f8677a4096c990428f86afbae43ed3e
   m_configObjects: {}
